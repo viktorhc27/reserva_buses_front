@@ -1,24 +1,34 @@
-<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px', primaryColour: '#3498db' }"></ngx-loading>
+<ngx-loading [show]="loading" [config]="{
+    backdropBorderRadius: '8px',
+    primaryColour: '#0d6efd',
+    secondaryColour: '#6c757d',
+    tertiaryColour: '#0d6efd'
+  }">
+</ngx-loading>
 
-<div class="container-fluid px-3">
-  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center py-3">
-    <h3 class="mb-2 mb-md-0">🚍 Gestión de Buses</h3>
-    <button class="btn btn-primary">
-      <i class="fas fa-plus me-2"></i> Agregar Bus
+<div class="container-fluid px-4 py-4 ">
+
+  <!-- Encabezado con línea divisoria -->
+  <div
+    class="border-bottom pb-3 mb-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+    <h2 class="fw-bold text-dark mb-3 mb-md-0">
+      Gestión de Buses
+    </h2>
+    <button class="btn btn-outline-primary btn-md px-4 shadow-sm" (click)="create()">
+      <i class="fas fa-plus me-2"></i> Nuevo Registro
     </button>
   </div>
 
-  <div class="table-responsive">
-    <ag-grid-angular
-      style="min-width: 600px; height: auto;"
-      class="ag-theme-alpine"
-      [rowData]="rowData"
-      [columnDefs]="colDefs"
-      [defaultColDef]="{ flex: 1, resizable: true }"
-      [pagination]="true"
-      [paginationPageSize]="20"
-      [localeText]="localeText"
-      [domLayout]="'autoHeight'">
+  <!-- Tabla de datos -->
+  <div class="table-responsive bg-white ">
+    <ag-grid-angular style="min-width: 600px; width: 100%; height: auto;" class="ag-theme-alpine" [rowData]="rowData"
+      [columnDefs]="colDefs" [defaultColDef]="{
+        flex: 1,
+        resizable: true,
+        sortable: true,
+        filter: true,
+        headerClass: 'fw-bold text-secondary'
+      }" [pagination]="true" [paginationPageSize]="20" [localeText]="localeText" [domLayout]="'autoHeight'">
     </ag-grid-angular>
   </div>
 </div>

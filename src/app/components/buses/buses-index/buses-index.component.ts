@@ -6,6 +6,10 @@ import { Bus } from '../../../interfaces/bus';
 import { BusesService } from '../buses.service';
 import { NgxLoadingModule } from 'ngx-loading';
 import { AlertService } from '../../../core/services/alert/alert.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { BusesCreateComponent } from '../buses-create/buses-create.component';
+import { BusesUpdateComponent } from '../buses-update/buses-update.component';
+import { BusesViewComponent } from '../buses-view/buses-view.component';
 @Component({
   selector: 'app-buses-index',
   standalone: true,
@@ -19,7 +23,8 @@ export class BusesIndexComponent {
   constructor(
     private agGridConfig: AgGridConfigService,
     private services: BusesService,
-    private alert: AlertService
+    private alert: AlertService,
+    private modalService: NgbModal,
 
   ) {
     this.localeText = this.agGridConfig.localeText;
@@ -86,18 +91,46 @@ export class BusesIndexComponent {
 
   rowData: Bus[] = [];
 
+  create() {
+    const modalRef = this.modalService.open(BusesCreateComponent, { size: 'md' });
+    modalRef.result.then((result: any) => {
+      this.loadDataIndex()
+    }, (reason: any) => { });
+  }
+
   // 🔹 Métodos de acción
   onVer(data: any) {
-    alert(`Ver: ${JSON.stringify(data)}`);
+    const modalRef = this.modalService.open(BusesViewComponent, { size: 'md' });
+    modalRef.componentInstance.element = data
+    modalRef.result.then((result: any) => {
+    }, (reason: any) => { });
   }
 
   onEditar(data: any) {
-    alert(`Editar: ${JSON.stringify(data)}`);
+    const modalRef = this.modalService.open(BusesUpdateComponent, { size: 'md' });
+    modalRef.componentInstance.element = data
+    modalRef.result.then((result: any) => {
+      this.loadDataIndex()
+    }, (reason: any) => { });
   }
 
-  onEliminar(data: any) {
-    if (confirm(`¿Eliminar ${data.make}?`)) {
-      this.rowData = this.rowData.filter(item => item !== data);
-    }
+  async onEliminar(data: any) {
+    const confirmado = await this.alert.alertConfirm(
+      '¿Seguro que quieres eliminar este bus?',
+      'Eliminar Bus'
+    );
+
+    if (!confirmado) return;
+    this.loading = true;
+    this.services.eliminar(data.id).subscribe({
+      next: (res: any) => {
+        this.loading = false;
+        this.alert.alertSuccess(res.response)
+        this.loadDataIndex()
+      }, error: (err: any) => {
+        this.loading = false;
+        if (err.response) this.alert.alertError(err.response)
+      }
+    });
   }
 }

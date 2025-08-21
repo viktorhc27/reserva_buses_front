@@ -1,1 +1,55 @@
-<p>buses-view works!</p>
+<div class="modal-header">
+  <h4 class="modal-title">Detalle Bus</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="patente">Patente</label>
+        <input type="text" class="form-control" formControlName="patente"
+          [ngClass]="{'is-invalid': form.controls['patente'].errors && form.controls['patente'].touched}">
+        <div class="invalid-feedback">
+          Debe Ingresar una Pantete
+        </div>
+      </div>
+    </div>
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="modelo">Modelo</label>
+        <input type="text" class="form-control" formControlName="modelo"
+          [ngClass]="{'is-invalid': form.controls['modelo'].errors && form.controls['modelo'].touched}">
+        <div class="invalid-feedback">
+          Debe Ingresar un Modelo
+        </div>
+      </div>
+    </div>
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="capacidad">Capacidad</label>
+        <input type="number" class="form-control" formControlName="capacidad"
+          [ngClass]="{'is-invalid': form.controls['capacidad'].errors && form.controls['capacidad'].touched}">
+        <div class="invalid-feedback">
+          Debe Ingresar una capacidad
+        </div>
+      </div>
+    </div>
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="estado">Estado</label>
+        <ng-select [items]="items" bindLabel="estado" bindValue="id" formControlName="estado">
+        </ng-select>
+        <div class="invalid-feedback">
+          Debe Ingresar una estado
+        </div>
+      </div>
+    </div>
+
+
+  </form>
+
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger" (click)="activeModal.dismiss('Cancel click')">Cerrar</button>
+</div>
