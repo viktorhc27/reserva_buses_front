@@ -1,58 +1,75 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 import { BusesService } from '../buses.service';
 import { AlertService } from '../../../core/services/alert/alert.service';
-import { NgSelectModule } from '@ng-select/ng-select';
+import { Bus } from '../../../interfaces/bus';
 
 @Component({
   selector: 'app-buses-update',
   standalone: true,
-  imports: [FormsModule, CommonModule, ReactiveFormsModule, NgSelectModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule],
   templateUrl: './buses-update.component.html',
   styleUrl: './buses-update.component.scss'
 })
-export class BusesUpdateComponent {
+export class BusesUpdateComponent implements OnInit {
+  @Input() element!: Bus;
+
   loading = false;
-  @Input() element: any
-  private services = inject(BusesService);
-  private alert = inject(AlertService);
-  public activeModal = inject(NgbActiveModal);
-  items = [
+  form: FormGroup = new FormGroup({});
+
+  readonly busesService = inject(BusesService);
+  readonly alertService = inject(AlertService);
+  readonly activeModal = inject(NgbActiveModal);
+  readonly formBuilder = inject(FormBuilder);
+
+  readonly estadoOptions = [
     { id: 'ACTIVO', estado: 'activo' },
     { id: 'INACTIVO', estado: 'inactivo' }
   ];
-  form: FormGroup = new FormGroup({});
-  constructor(
-    public formBuilder: FormBuilder,
-  ) {
 
-
-  }
   ngOnInit(): void {
+    this.initForm();
+    this.populateForm();
+  }
+
+  private initForm(): void {
     this.form = this.formBuilder.group({
       id: [],
-      patente: [null, [Validators.required]],
-      modelo: [null, [Validators.required]],
-      capacidad: [null, [Validators.required]],
-      estado: [null, [Validators.required]],
+      patente: [null, Validators.required],
+      modelo: [null, Validators.required],
+      capacidad: [null, Validators.required],
+      estado: [null, Validators.required]
     });
-
-    this.form.patchValue(this.element);
-
   }
-  update() {
+
+  private populateForm(): void {
+    if (this.element) {
+      this.form.patchValue(this.element);
+    }
+  }
+
+  update(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.alertService.alertWarning('Por favor completa todos los campos requeridos.');
+      return;
+    }
+
+
     this.loading = true;
-    this.services.update(this.form.value).subscribe({
-      next: (res: any) => {
+    this.busesService.update(this.form.value).subscribe({
+      next: (res) => {
         this.loading = false;
-        this.alert.alertSuccess(res.response)
-        this.activeModal.close()
-      }, error: (err: any) => {
+        this.alertService.alertSuccess(res.response);
+        this.activeModal.close();
+      },
+      error: (err) => {
         this.loading = false;
-        console.log(err);
-        if (err.response) this.alert.alertError(err.response)
+        this.alertService.alertError(err.response || err);
       }
     });
   }

@@ -3,31 +3,33 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../core/environment';
 import { Observable } from 'rxjs';
 import { Bus } from '../../interfaces/bus';
+
 @Injectable({
   providedIn: 'root'
 })
 export class BusesService {
-  controller: string = 'buses/'
-  urlBase = environment.apiURL;
-  constructor(
-    private http: HttpClient,
-    /*    private config: ConfigService,
-       private sesion: SesionService */
-  ) { }
+  private readonly controller: string = 'buses/';
+  private readonly urlBase: string = environment.apiURL;
 
-  index(): Observable<any> {
-    return this.http.get(environment.apiURL + this.controller + 'index');
+  constructor(private http: HttpClient) { }
+
+  index(): Observable<Bus[]> {
+    return this.http.get<Bus[]>(this.urlBase + this.controller + 'index');
   }
-  create(form: any): Observable<any> {
-    return this.http.post(environment.apiURL + this.controller + 'create', { bus: form });
+
+  create(bus: Bus): Observable<{ response: string }> {
+    return this.http.post<{ response: string }>(this.urlBase + this.controller + 'create', { bus: bus });
   }
-  view(data: any): Observable<any> {
-    return this.http.get(environment.apiURL + this.controller + 'view/' + data);
+
+  view(id: number): Observable<Bus> {
+    return this.http.get<Bus>(this.urlBase + this.controller + 'view/' + id);
   }
-  update(form: any): Observable<any> {
-    return this.http.put(environment.apiURL + this.controller + 'update/' + form.id, { bus: form });
+
+  update(bus: Bus): Observable<{ response: string }> {
+    return this.http.put<{ response: string }>(this.urlBase + this.controller + 'update/' + bus.id, { bus: bus });
   }
-  eliminar(data: any): Observable<any> {
-    return this.http.delete(environment.apiURL + this.controller + 'delete/' + data);
+
+  delete(id: number): Observable<{ response: string }> {
+    return this.http.delete<{ response: string }>(this.urlBase + this.controller + 'delete/' + id);
   }
 }

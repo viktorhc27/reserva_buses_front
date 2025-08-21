@@ -1,45 +1,54 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 import { BusesService } from '../buses.service';
 import { AlertService } from '../../../core/services/alert/alert.service';
-import { NgSelectModule } from '@ng-select/ng-select';
+import { Bus } from '../../../interfaces/bus';
+
 @Component({
   selector: 'app-buses-view',
   standalone: true,
-  imports: [FormsModule, CommonModule, ReactiveFormsModule, NgSelectModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule],
   templateUrl: './buses-view.component.html',
   styleUrl: './buses-view.component.scss'
 })
-export class BusesViewComponent {
+export class BusesViewComponent implements OnInit {
+  @Input() element!: Bus;
+  form: FormGroup = new FormGroup({});
   loading = false;
-  @Input() element: any
-  private services = inject(BusesService);
-  private alert = inject(AlertService);
-  public activeModal = inject(NgbActiveModal);
-  items = [
+
+  readonly busesService = inject(BusesService);
+  readonly alertService = inject(AlertService);
+  readonly activeModal = inject(NgbActiveModal);
+  readonly formBuilder = inject(FormBuilder);
+
+  readonly estadoOptions = [
     { id: 'ACTIVO', estado: 'activo' },
     { id: 'INACTIVO', estado: 'inactivo' }
   ];
-  form: FormGroup = new FormGroup({});
-  constructor(
-    public formBuilder: FormBuilder,
-  ) {
 
-
-  }
   ngOnInit(): void {
+    this.initForm();
+    this.populateForm();
+    this.form.disable(); // Solo lectura
+  }
+
+  private initForm(): void {
     this.form = this.formBuilder.group({
       id: [],
-      patente: [null, [Validators.required]],
-      modelo: [null, [Validators.required]],
-      capacidad: [null, [Validators.required]],
-      estado: [null, [Validators.required]],
+      patente: [null, Validators.required],
+      modelo: [null, Validators.required],
+      capacidad: [null, Validators.required],
+      estado: [null, Validators.required]
     });
+  }
 
-    this.form.patchValue(this.element);
-    this.form.disable()
-
+  private populateForm(): void {
+    if (this.element) {
+      this.form.patchValue(this.element);
+    }
   }
 }

@@ -10,6 +10,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BusesCreateComponent } from '../buses-create/buses-create.component';
 import { BusesUpdateComponent } from '../buses-update/buses-update.component';
 import { BusesViewComponent } from '../buses-view/buses-view.component';
+
 @Component({
   selector: 'app-buses-index',
   standalone: true,
@@ -19,118 +20,105 @@ import { BusesViewComponent } from '../buses-view/buses-view.component';
 })
 export class BusesIndexComponent {
   loading = false;
+  rowData: Bus[] = [];
   localeText: any;
-  constructor(
-    private agGridConfig: AgGridConfigService,
-    private services: BusesService,
-    private alert: AlertService,
-    private modalService: NgbModal,
-
-  ) {
-    this.localeText = this.agGridConfig.localeText;
-    this.loadDataIndex()
-  }
 
   colDefs: ColDef[] = [
-    { field: 'id', minWidth: 20, headerName: 'Id' },
-    { field: 'patente', minWidth: 90, headerName: 'Patente' },
-    { field: 'modelo', minWidth: 90, headerName: 'Modelo' },
-    { field: 'capacidad', minWidth: 90, headerName: 'Capacidad' },
-    { field: 'estado', minWidth: 90, headerName: 'Estado' },
+    { field: 'id', headerName: 'ID', minWidth: 60 },
+    { field: 'patente', headerName: 'Patente', minWidth: 120 },
+    { field: 'modelo', headerName: 'Modelo', minWidth: 120 },
+    { field: 'capacidad', headerName: 'Capacidad', minWidth: 100 },
+    { field: 'estado', headerName: 'Estado', minWidth: 100 },
     {
       headerName: 'Acciones',
-      minWidth: 160,
+      minWidth: 180,
       suppressSizeToFit: true,
-      cellRenderer: (params: ICellRendererParams) => {
-        const container = document.createElement('div');
-        container.classList.add("d-flex", "flex-wrap", "gap-2", "justify-content-center");
-
-        const verBtn = document.createElement('button');
-        verBtn.className = 'btn btn-sm btn-outline-primary';
-        verBtn.innerHTML = '<i class="fas fa-eye"></i>';
-        verBtn.title = 'Ver';
-        verBtn.addEventListener('click', () => this.onVer(params.data));
-
-        const editarBtn = document.createElement('button');
-        editarBtn.className = 'btn btn-sm btn-outline-warning';
-        editarBtn.innerHTML = '<i class="fas fa-edit"></i>';
-        editarBtn.title = 'Editar';
-        editarBtn.addEventListener('click', () => this.onEditar(params.data));
-
-        const eliminarBtn = document.createElement('button');
-        eliminarBtn.className = 'btn btn-sm btn-outline-danger';
-        eliminarBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-        eliminarBtn.title = 'Eliminar';
-        eliminarBtn.addEventListener('click', () => this.onEliminar(params.data));
-
-        container.appendChild(verBtn);
-        container.appendChild(editarBtn);
-        container.appendChild(eliminarBtn);
-
-        return container;
-      }
-
+      cellRenderer: (params: ICellRendererParams) => this.renderActionButtons(params)
     }
   ];
 
-  loadDataIndex() {
-    this.loading = true;
-    this.services.index().subscribe({
-      next: (res: any) => {
-        this.loading = false;
-        this.rowData = res
-      }, error: (err: any) => {
-        this.loading = false;
-        console.log(err);
-        this.alert.alertError(err)
+  constructor(
+    private agGridConfig: AgGridConfigService,
+    private busesService: BusesService,
+    private alertService: AlertService,
+    private modalService: NgbModal
+  ) {
+    this.localeText = this.agGridConfig.localeText;
+    this.loadBuses();
+  }
 
+  private loadBuses(): void {
+    this.loading = true;
+    this.busesService.index().subscribe({
+      next: (buses: Bus[]) => {
+        this.rowData = buses;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.loading = false;
+        this.alertService.alertError(err);
       }
     });
-
   }
 
-  rowData: Bus[] = [];
-
-  create() {
+  create(): void {
     const modalRef = this.modalService.open(BusesCreateComponent, { size: 'md' });
-    modalRef.result.then((result: any) => {
-      this.loadDataIndex()
-    }, (reason: any) => { });
+    modalRef.result.then(() => this.loadBuses(), () => { });
   }
 
-  // 🔹 Métodos de acción
-  onVer(data: any) {
+  view(bus: Bus): void {
     const modalRef = this.modalService.open(BusesViewComponent, { size: 'md' });
-    modalRef.componentInstance.element = data
-    modalRef.result.then((result: any) => {
-    }, (reason: any) => { });
+    modalRef.componentInstance.element = bus;
   }
 
-  onEditar(data: any) {
+  edit(bus: Bus): void {
     const modalRef = this.modalService.open(BusesUpdateComponent, { size: 'md' });
-    modalRef.componentInstance.element = data
-    modalRef.result.then((result: any) => {
-      this.loadDataIndex()
-    }, (reason: any) => { });
+    modalRef.componentInstance.element = bus;
+    modalRef.result.then(() => this.loadBuses(), () => { });
   }
 
-  async onEliminar(data: any) {
-    const confirmado = await this.alert.alertConfirm(
+  async delete(bus: Bus): Promise<void> {
+    const confirmed = await this.alertService.alertConfirm(
       '¿Seguro que quieres eliminar este bus?',
       'Eliminar Bus'
     );
+    if (!confirmed) return;
+    if (!bus?.id) {
+      this.alertService.alertWarning('No se puede eliminar: el bus no tiene un ID válido.');
+      return;
+    }
 
-    if (!confirmado) return;
     this.loading = true;
-    this.services.eliminar(data.id).subscribe({
-      next: (res: any) => {
+    this.busesService.delete(bus.id).subscribe({
+      next: (res) => {
+        this.alertService.alertSuccess(res.response);
+        this.loadBuses();
         this.loading = false;
-        this.alert.alertSuccess(res.response)
-        this.loadDataIndex()
-      }, error: (err: any) => {
+      },
+      error: (err) => {
         this.loading = false;
-        if (err.response) this.alert.alertError(err.response)
+        this.alertService.alertError(err.response || err);
       }
     });
+  }
+
+  private renderActionButtons(params: ICellRendererParams): HTMLElement {
+    const container = document.createElement('div');
+    container.className = 'd-flex gap-2 justify-content-center';
+
+    container.appendChild(this.createActionButton('Ver', 'btn-primary', () => this.view(params.data)));
+    container.appendChild(this.createActionButton('Editar', 'btn-warning', () => this.edit(params.data)));
+    container.appendChild(this.createActionButton('Eliminar', 'btn-danger', () => this.delete(params.data)));
+
+    return container;
+  }
+
+  private createActionButton(label: string, btnClass: string, onClick: () => void): HTMLButtonElement {
+    const button = document.createElement('button');
+    button.className = `btn btn-sm ${btnClass}`;
+    button.textContent = label;
+    button.title = label;
+    button.addEventListener('click', onClick);
+    return button;
   }
 }
