@@ -3,30 +3,26 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { BusesService } from '../buses.service';
+
 import { AlertService } from '../../../core/services/alert/alert.service';
-import { Bus } from '../../../interfaces/bus';
+import { RutasService } from '../rutas.service';
+import { Ruta } from '../../../interfaces/ruta';
 
 @Component({
-  selector: 'app-buses-create',
+  selector: 'app-rutas-create',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgSelectModule],
-  templateUrl: './buses-create.component.html',
-  styleUrl: './buses-create.component.scss'
+  templateUrl: './rutas-create.component.html',
+  styleUrl: './rutas-create.component.scss'
 })
-export class BusesCreateComponent implements OnInit {
+export class RutasCreateComponent {
   loading = false;
   form: FormGroup = new FormGroup({});
 
-  readonly busesService = inject(BusesService);
+  readonly service = inject(RutasService);
   readonly alertService = inject(AlertService);
   readonly activeModal = inject(NgbActiveModal);
   readonly formBuilder = inject(FormBuilder);
-
-  readonly estadoOptions = [
-    { id: 'ACTIVO', estado: 'activo' },
-    { id: 'INACTIVO', estado: 'inactivo' }
-  ];
 
   ngOnInit(): void {
     this.initForm();
@@ -34,10 +30,9 @@ export class BusesCreateComponent implements OnInit {
 
   private initForm(): void {
     this.form = this.formBuilder.group({
-      patente: [null, Validators.required],
-      modelo: [null, Validators.required],
-      capacidad: [null, Validators.required],
-      estado: [null, Validators.required]
+      origen: [null, Validators.required],
+      destino: [null, Validators.required],
+      duracionEstimada: [null, Validators.required],
     });
   }
 
@@ -49,9 +44,9 @@ export class BusesCreateComponent implements OnInit {
     }
 
     this.loading = true;
-    const busData: Bus = this.form.value;
+    const busData: Ruta = this.form.value;
 
-    this.busesService.create(busData).subscribe({
+    this.service.create(busData).subscribe({
       next: (res) => {
         this.loading = false;
         this.alertService.alertSuccess(res.response);

@@ -1,63 +1,77 @@
-<router-outlet />
 <!-- Navbar superior -->
-<nav class="navbar navbar-light bg-light border-bottom px-3">
-  <button class="btn btn-outline-secondary d-lg-none" type="button" data-bs-toggle="offcanvas"
-    data-bs-target="#sidebarMobile" aria-controls="sidebarMobile">
-    <i class="bi bi-list"></i>
-  </button>
-  <a class="navbar-brand ms-2" href="#">Mi App</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom px-3 shadow-sm">
+  <div class="container-fluid">
+    <button class="btn btn-outline-secondary d-lg-none" type="button" data-bs-toggle="offcanvas"
+      data-bs-target="#sidebarMobile" aria-controls="sidebarMobile">
+      ☰
+    </button>
+    <a class="navbar-brand fw-semibold text-primary ms-2" href="#">Mi Plataforma</a>
+  </div>
 </nav>
 
 <!-- Sidebar fijo en escritorio -->
-<div class="sidebar bg-light d-none d-lg-block position-fixed p-3">
-  <h4 class="mb-4">MENÚ</h4>
+<aside class="sidebar bg-light d-none d-lg-block position-fixed p-4 border-end" style="width: 240px; height: 100vh;">
+  <h5 class="text-muted mb-4">Menú Principal</h5>
   <ul class="nav nav-pills flex-column">
-    <li class="nav-item">
+    <li class="nav-item mb-2">
       <a [routerLink]="['/inicio']" routerLinkActive="active" class="nav-link text-dark">
-        <i class="fas fa-house me-2"></i> Inicio
+        Inicio
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item mb-2">
       <a [routerLink]="['/perfil']" routerLinkActive="active" class="nav-link text-dark">
-        <i class="fas fa-user me-2"></i> Perfil
+        Perfil
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item mb-2">
       <a [routerLink]="['/buses']" routerLinkActive="active" class="nav-link text-dark">
-        <i class="fas fa-bus me-2"></i> Buses
+        Gestión de Buses
       </a>
     </li>
-    <li class="nav-item">
+    <li class="nav-item mb-2">
+      <a [routerLink]="['/rutas']" routerLinkActive="active" class="nav-link text-dark">
+        Gestión de Rutas
+      </a>
+    </li>
+    <li class="nav-item mb-2">
       <a [routerLink]="['/config']" routerLinkActive="active" class="nav-link text-dark">
-        <i class="fas fa-gear me-2"></i> Configuración
+        Configuración
       </a>
     </li>
   </ul>
-</div>
-
-
+</aside>
 
 <!-- Sidebar offcanvas en móviles -->
 <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarMobile">
   <div class="offcanvas-header">
-    <h5 class="offcanvas-title">MENÚ</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    <h5 class="offcanvas-title">Menú</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
   </div>
   <div class="offcanvas-body">
     <ul class="nav nav-pills flex-column">
-      <li class="nav-item">
-        <a href="#inicio" class="nav-link active">
-          <i class="bi bi-house-door-fill me-2"></i> Inicio
+      <li class="nav-item mb-2">
+        <a [routerLink]="['/inicio']" routerLinkActive="active" class="nav-link text-dark" data-bs-dismiss="offcanvas">
+          Inicio
         </a>
       </li>
-      <li class="nav-item">
-        <a href="#perfil" class="nav-link text-dark">
-          <i class="bi bi-person-fill me-2"></i> Perfil
+      <li class="nav-item mb-2">
+        <a [routerLink]="['/perfil']" routerLinkActive="active" class="nav-link text-dark" data-bs-dismiss="offcanvas">
+          Perfil
         </a>
       </li>
-      <li class="nav-item">
-        <a href="#config" class="nav-link text-dark">
-          <i class="bi bi-gear-fill me-2"></i> Configuración
+      <li class="nav-item mb-2">
+        <a [routerLink]="['/buses']" routerLinkActive="active" class="nav-link text-dark" data-bs-dismiss="offcanvas">
+          Buses
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a [routerLink]="['/rutas']" routerLinkActive="active" class="nav-link text-dark" data-bs-dismiss="offcanvas">
+          Rutas
+        </a>
+      </li>
+      <li class="nav-item mb-2">
+        <a [routerLink]="['/config']" routerLinkActive="active" class="nav-link text-dark" data-bs-dismiss="offcanvas">
+          Configuración
         </a>
       </li>
     </ul>
@@ -65,6 +79,8 @@
 </div>
 
 <!-- Contenido principal -->
-<div class="main-content">
-  <router-outlet />
-</div>
+<main class="main-content" >
+  <div class="container-fluid py-4">
+    <router-outlet></router-outlet>
+  </div>
+</main>

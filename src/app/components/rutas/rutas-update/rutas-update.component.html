@@ -1,0 +1,43 @@
+<div class="modal-header">
+  <h4 class="modal-title">Detalle Ruta</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="row g-3">
+
+      <!-- Origen -->
+      <div class="col-12 col-md-6">
+        <label for="origen" class="form-label">Origen</label>
+        <input type="text" id="origen" class="form-control" formControlName="origen"
+          [ngClass]="{'is-invalid': form.controls['origen'].errors && form.controls['origen'].touched}">
+        <div class="invalid-feedback">Debe ingresar un origen</div>
+      </div>
+
+      <!-- Destino -->
+      <div class="col-12 col-md-6">
+        <label for="destino" class="form-label">Destino</label>
+        <input type="text" id="destino" class="form-control" formControlName="destino"
+          [ngClass]="{'is-invalid': form.controls['destino'].errors && form.controls['destino'].touched}">
+        <div class="invalid-feedback">Debe ingresar un destino</div>
+      </div>
+
+      <!-- Duración Estimada -->
+      <div class="col-12 col-md-6">
+        <label for="duracionEstimada" class="form-label">Duración Estimada</label>
+        <input type="number" id="duracionEstimada" class="form-control" formControlName="duracionEstimada"
+          [ngClass]="{'is-invalid': form.controls['duracionEstimada'].errors && form.controls['duracionEstimada'].touched}">
+        <div class="invalid-feedback">Debe ingresar una duración estimada</div>
+      </div>
+
+
+    </div>
+  </form>
+
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success" (click)="update()">Guardar</button>
+  <button type="button" class="btn btn-danger" (click)="activeModal.dismiss('Cancel click')">Cerrar</button>
+</div>
