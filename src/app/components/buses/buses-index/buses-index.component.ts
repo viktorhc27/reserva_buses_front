@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, ICellRendererParams } from 'ag-grid-community';
-import { AgGridConfigService } from '../../../core/services/ag-grid-config.service';
+import { AgGridConfigService } from '../../../core/services/config-asgrid/ag-grid-config.service';
 import { Bus } from '../../../interfaces/bus';
 import { BusesService } from '../buses.service';
 import { NgxLoadingModule } from 'ngx-loading';
+import { AlertService } from '../../../core/services/alert/alert.service';
 @Component({
   selector: 'app-buses-index',
   standalone: true,
-  imports: [AgGridAngular,NgxLoadingModule],
+  imports: [AgGridAngular, NgxLoadingModule],
   templateUrl: './buses-index.component.html',
   styleUrls: ['./buses-index.component.scss']
 })
@@ -17,7 +18,9 @@ export class BusesIndexComponent {
   localeText: any;
   constructor(
     private agGridConfig: AgGridConfigService,
-    private services: BusesService
+    private services: BusesService,
+    private alert: AlertService
+
   ) {
     this.localeText = this.agGridConfig.localeText;
     this.loadDataIndex()
@@ -74,6 +77,7 @@ export class BusesIndexComponent {
       }, error: (err: any) => {
         this.loading = false;
         console.log(err);
+        this.alert.alertError(err)
 
       }
     });
