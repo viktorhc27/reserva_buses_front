@@ -1,0 +1,32 @@
+<div class="modal-header">
+  <h4 class="modal-title">Actualizar Usuario</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="mb-2">
+      <label>Nombre</label>
+      <input type="text" class="form-control" formControlName="nombre">
+    </div>
+    <div class="mb-2">
+      <label>Apellido</label>
+      <input type="text" class="form-control" formControlName="apellido">
+    </div>
+    <div class="mb-2">
+      <label>Email</label>
+      <input type="email" class="form-control" formControlName="email">
+    </div>
+    <div class="mb-2">
+      <label>Teléfono</label>
+      <input type="text" class="form-control" formControlName="telefono">
+    </div>
+    <div class="mb-2">
+      <label>Rol</label>
+      <ng-select [items]="rolOptions" bindLabel="rol" bindValue="id" formControlName="rol"></ng-select>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success" (click)="update()">Guardar</button>
+  <button class="btn btn-danger" (click)="activeModal.dismiss()">Cancelar</button>
+</div>

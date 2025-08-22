@@ -1,0 +1,73 @@
+<div class="modal-header">
+  <h4 class="modal-title">Detalle Horario</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="fechaSalida">Fecha Salida</label>
+        <input type="date" class="form-control" formControlName="fechaSalida"
+          [ngClass]="{'is-invalid': form.controls['fechaSalida'].errors && form.controls['fechaSalida'].touched}">
+        <div class="invalid-feedback">
+          Debe Ingresar una Fecha Salida
+        </div>
+      </div>
+    </div>
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="horaSalida">hora Salida</label>
+        <input type="time" class="form-control" formControlName="horaSalida"
+          [ngClass]="{'is-invalid': form.controls['horaSalida'].errors && form.controls['horaSalida'].touched}">
+        <div class="invalid-feedback">
+          Debe Ingresar una horaSalida
+        </div>
+      </div>
+    </div>
+
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="bus_id">Bus</label>
+        <ng-select [items]="buses" bindLabel="patente" bindValue="id" formControlName="bus_id">
+        </ng-select>
+        <div class="invalid-feedback">
+          Debe Ingresar un bus
+        </div>
+      </div>
+    </div>
+
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="usuario_id">Chofer</label>
+        <ng-select [items]="usuarios" bindLabel="nombre" bindValue="id" formControlName="usuario_id">
+        </ng-select>
+        <div class="invalid-feedback">
+          Debe Ingresar un Chofer
+        </div>
+      </div>
+    </div>
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="ruta_id">Ruta</label>
+        <ng-select [items]="rutas" bindValue="id" formControlName="ruta_id" [searchable]="false" [clearable]="false">
+
+          <ng-template ng-option-tmp let-item="item">
+            {{ item.origen }} → {{ item.destino }}
+          </ng-template>
+          <ng-template ng-label-tmp let-item="item">
+            {{ item.origen }} → {{ item.destino }}
+          </ng-template>
+        </ng-select>
+
+        <div class="invalid-feedback">
+          Debe Ingresar un Chofer
+        </div>
+      </div>
+    </div>
+  </form>
+
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-danger" (click)="activeModal.dismiss('Cancel click')">Cerrar</button>
+</div>
