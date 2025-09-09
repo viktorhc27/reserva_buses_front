@@ -1,63 +1,129 @@
+<!-- Navbar superior -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-3 shadow-sm">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
 
-  <!-- Navbar superior -->
-  <nav class="navbar navbar-light bg-light border-bottom px-3">
-    <button class="btn btn-outline-secondary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile" aria-controls="sidebarMobile">
-      <i class="bi bi-list"></i>
+    <!-- Botón sidebar móvil -->
+    <button class="btn btn-primary text-white d-lg-none me-2" type="button" data-bs-toggle="offcanvas"
+      data-bs-target="#sidebarMobile" aria-controls="sidebarMobile">
+      <i class="bi bi-list fs-4"></i>
     </button>
-    <a class="navbar-brand ms-2" href="#">Mi App</a>
-  </nav>
 
-  <!-- Sidebar fijo en escritorio -->
-  <div class="sidebar bg-light d-none d-lg-block position-fixed p-3">
-    <h4 class="mb-4">MENÚ</h4>
-    <ul class="nav nav-pills flex-column">
-      <li class="nav-item">
-        <a href="#inicio" class="nav-link active">
-          <i class="bi bi-house-door-fill me-2"></i> Inicio
+    <!-- Marca -->
+    <a class="navbar-brand fw-bold text-white d-flex align-items-center" href="#">
+      <i class="bi bi-building me-2 fs-4"></i> Mi Plataforma
+    </a>
+
+    <!-- Sección derecha -->
+    <div class="d-flex align-items-center">
+      <!-- Notificaciones -->
+      <button class="btn btn-link text-white position-relative me-3">
+        <i class="bi bi-bell fs-5"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          3
+        </span>
+      </button>
+
+      <!-- Dropdown usuario -->
+      <div class="dropdown">
+        <a class="d-flex align-items-center text-decoration-none dropdown-toggle text-white" href="#" id="userMenu"
+          role="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+          <!-- Avatar -->
+          <img src="https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png" alt="avatar"
+            class="rounded-circle border border-2 border-white">
+
+          <!-- Texto solo en pantallas medianas o mayores -->
+          <span class="fw-semibold ms-2 d-none d-md-inline">Usuario</span>
         </a>
-      </li>
-      <li class="nav-item">
-        <a href="#perfil" class="nav-link text-dark">
-          <i class="bi bi-person-fill me-2"></i> Perfil
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="#config" class="nav-link text-dark">
-          <i class="bi bi-gear-fill me-2"></i> Configuración
-        </a>
-      </li>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenu">
+          <li>
+            <h6 class="dropdown-header">Cuenta</h6>
+          </li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Perfil</a></li>
+          <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i> Configuración</a></li>
+          <li>
+            <hr class="dropdown-divider">
+          </li>
+          <li><button class="dropdown-item text-danger" (click)="cerrarSesion()"><i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+<!-- Sidebar fijo en escritorio -->
+<aside class="sidebar bg-white d-none d-lg-flex flex-column position-fixed p-3 border-end shadow-sm"
+  style="width: 240px; height: 100vh;">
+  <h6 class="text-muted text-uppercase fw-bold mb-3">Menú</h6>
+  <ul class="nav nav-pills flex-column gap-1">
+    <li class="nav-item">
+      <a [routerLink]="['/inicio']" routerLinkActive="active" class="nav-link d-flex align-items-center">
+        <i class="bi bi-house-door me-2"></i> Inicio
+      </a>
+    </li>
+    <li class="nav-item">
+      <a [routerLink]="['/perfil']" routerLinkActive="active" class="nav-link d-flex align-items-center">
+        <i class="bi bi-person-circle me-2"></i> Perfil
+      </a>
+    </li>
+    <li class="nav-item">
+      <a [routerLink]="['/buses']" routerLinkActive="active" class="nav-link d-flex align-items-center">
+        <i class="bi bi-bus-front me-2"></i> Buses
+      </a>
+    </li>
+    <li class="nav-item">
+      <a [routerLink]="['/rutas']" routerLinkActive="active" class="nav-link d-flex align-items-center">
+        <i class="bi bi-map me-2"></i> Rutas
+      </a>
+    </li>
+    <li class="nav-item">
+      <a [routerLink]="['/horario']" routerLinkActive="active" class="nav-link d-flex align-items-center">
+        <i class="bi bi-calendar-event me-2"></i> Horarios
+      </a>
+    </li>
+    <li class="nav-item">
+      <a [routerLink]="['/reservas']" routerLinkActive="active" class="nav-link d-flex align-items-center">
+        <i class="bi bi-calendar-event me-2"></i> Reservas
+      </a>
+    </li>
+    <li class="nav-item">
+      <a [routerLink]="['/usuario']" routerLinkActive="active" class="nav-link d-flex align-items-center">
+        <i class="bi bi-person me-2"></i> Usuarios
+      </a>
+    </li>
+    <li class="nav-item">
+      <a [routerLink]="['/config']" routerLinkActive="active" class="nav-link d-flex align-items-center">
+        <i class="bi bi-gear me-2"></i> Configuración
+      </a>
+    </li>
+  </ul>
+</aside>
+
+<!-- Sidebar offcanvas en móviles -->
+<div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarMobile">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title fw-bold">Menú</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="nav nav-pills flex-column gap-2">
+      <li><a [routerLink]="['/inicio']" routerLinkActive="active" class="nav-link" data-bs-dismiss="offcanvas"><i
+            class="bi bi-house-door me-2"></i>Inicio</a></li>
+      <li><a [routerLink]="['/perfil']" routerLinkActive="active" class="nav-link" data-bs-dismiss="offcanvas"><i
+            class="bi bi-person-circle me-2"></i>Perfil</a></li>
+      <li><a [routerLink]="['/buses']" routerLinkActive="active" class="nav-link" data-bs-dismiss="offcanvas"><i
+            class="bi bi-bus-front me-2"></i>Buses</a></li>
+      <li><a [routerLink]="['/rutas']" routerLinkActive="active" class="nav-link" data-bs-dismiss="offcanvas"><i
+            class="bi bi-map me-2"></i>Rutas</a></li>
+      <li><a [routerLink]="['/horario']" routerLinkActive="active" class="nav-link" data-bs-dismiss="offcanvas"><i
+            class="bi bi-calendar-event me-2"></i>Horarios</a></li>
+      <li><a [routerLink]="['/reservas']" routerLinkActive="active" class="nav-link" data-bs-dismiss="offcanvas"><i
+            class="bi bi-calendar-event me-2"></i>Reservas</a></li>
+      <li><a [routerLink]="['/config']" routerLinkActive="active" class="nav-link" data-bs-dismiss="offcanvas"><i
+            class="bi bi-gear me-2"></i>Configuración</a></li>
     </ul>
   </div>
-
-  <!-- Sidebar offcanvas en móviles -->
-  <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="sidebarMobile">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title">MENÚ</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-    </div>
-    <div class="offcanvas-body">
-      <ul class="nav nav-pills flex-column">
-        <li class="nav-item">
-          <a href="#inicio" class="nav-link active">
-            <i class="bi bi-house-door-fill me-2"></i> Inicio
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#perfil" class="nav-link text-dark">
-            <i class="bi bi-person-fill me-2"></i> Perfil
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#config" class="nav-link text-dark">
-            <i class="bi bi-gear-fill me-2"></i> Configuración
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Contenido principal -->
-  <div class="main-content">
-    <h1>Bienvenido</h1>
-    <p>Este es el contenido principal de tu app.</p>
-  </div>
+</div>

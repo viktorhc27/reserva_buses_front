@@ -64,8 +64,8 @@ export class BusesUpdateComponent implements OnInit {
     this.busesService.update(this.form.value).subscribe({
       next: (res) => {
         this.loading = false;
-        this.alertService.alertSuccess(res.response);
         this.activeModal.close();
+        this.alertService.alertSuccess(res.response);
       },
       error: (err) => {
         this.loading = false;

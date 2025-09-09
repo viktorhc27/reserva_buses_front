@@ -6,10 +6,11 @@ import { ToastrModule } from 'ngx-toastr'
 import { routes } from './app.routes';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    importProvidersFrom(HttpClientModule, NgxLoadingModule, ToastrModule.forRoot(), BrowserAnimationsModule, NgbModule)]
+    provideNgxMask(),
+    importProvidersFrom(HttpClientModule, NgxLoadingModule, ToastrModule.forRoot(), BrowserAnimationsModule, NgbModule, NgxMaskDirective)]
 };

@@ -1,0 +1,18 @@
+<div class="d-flex flex-wrap gap-2">
+  <div *ngFor="let item of asientosLista" class="seat text-center" [ngClass]="{
+         'disponible': item.estado === 'disponible',
+         'reservado': item.estado === 'reservado',
+         'ocupado': item.estado === 'ocupado',
+         'fuera-servicio': item.estado === 'fuera_servicio'
+       }" (click)=" seleccionarAsiento(item) ">
+
+    <div class="seat-number fw-bold">{{ item.numero }}</div>
+
+    <div class="seat-status mt-1">
+      <span *ngIf="item.estado === 'disponible'" class="text-success">Disp</span>
+      <span *ngIf="item.estado === 'reservado'" class="text-warning">Res</span>
+      <span *ngIf="item.estado === 'ocupado'" class="text-danger">Ocup</span>
+      <span *ngIf="item.estado === 'fuera_servicio'" class="text-secondary">FS</span>
+    </div>
+  </div>
+</div>

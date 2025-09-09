@@ -1,0 +1,22 @@
+/* ==== Layout general ==== */
+body {
+  overflow-x: hidden;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+/* ==== Sidebar fijo en escritorio ==== */
+
+/* ==== Contenido principal ==== */
+.main-content {
+  margin-left: 250px;
+  padding: 24px;
+  transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 991.98px) {
+  .main-content {
+    margin-left: 0;
+  }
+}

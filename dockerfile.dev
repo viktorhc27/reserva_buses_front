@@ -1,0 +1,26 @@
+# Usamos una imagen de Node
+FROM node:20-slim
+
+# Creamos un usuario no root (opcional pero recomendable)
+RUN addgroup dev && adduser -S -G dev victor
+
+# Definimos directorio de trabajo
+WORKDIR /app
+
+# Copiamos package.json y package-lock.json para instalar dependencias
+COPY package*.json ./
+
+# Instalamos Angular CLI globalmente
+RUN npm install -g @angular/cli
+
+# Instalamos dependencias
+RUN npm install
+
+# Copiamos el resto de la app
+COPY . .
+
+# Exponemos el puerto que usa ng serve
+EXPOSE 4200
+
+# Comando para desarrollo con hot reload
+CMD ["ng", "serve", "--host", "0.0.0.0"]

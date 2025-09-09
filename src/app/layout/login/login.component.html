@@ -1,1 +1,22 @@
-<p>login works!</p>
+<ngx-loading [show]="loading" [config]="{
+    backdropBorderRadius: '8px',
+    primaryColour: '#0d6efd',
+    secondaryColour: '#6c757d',
+    tertiaryColour: '#0d6efd'
+  }">
+</ngx-loading>
+<form [formGroup]="loginForm" class="form px-4 pt-4 pb-3" (ngSubmit)="login()">
+  <div class="mb-3">
+    <label for="loginEmail" class="form-label">Email</label>
+    <input type="text" id="loginEmail" formControlName="email" class="form-control" placeholder="Enter your email or phone"  required>
+  </div>
+  <div class="mb-3">
+    <label for="loginPassword" class="form-label">Password</label>
+    <input type="password" id="loginPassword" formControlName="password" class="form-control" placeholder="Enter your password"  required>
+  </div>
+
+  <button type="submit" class="btn btn-dark btn-block w-100" (click)="login()">Login</button>
+  <div class="text-end mt-2">
+    <a href="#" class="small text-muted">Forgot password?</a>
+  </div>
+</form>

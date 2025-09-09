@@ -1,22 +1,103 @@
+/* ==== Layout general ==== */
 body {
-      overflow-x: hidden;
-    }
+  overflow-x: hidden;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
 
-    /* Sidebar fijo en escritorio */
-    .sidebar {
-      width: 250px;
-      height: 100vh;
-    }
+/* ==== Sidebar fijo en escritorio ==== */
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background-color: #fff;
+  border-right: 1px solid #e5e7eb;
+  box-shadow: 0 0 15px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
 
-    /* Ajuste del contenido principal */
-    .main-content {
-      margin-left: 250px;
-      padding: 20px;
-    }
 
-    /* En móviles, el sidebar no ocupa espacio fijo */
-    @media (max-width: 991.98px) {
-      .main-content {
-        margin-left: 0;
-      }
-    }
+/* ==== Sidebar links ==== */
+.sidebar .nav-link {
+  border-radius: .5rem;
+  padding: .65rem .85rem;
+  color: #444;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.sidebar .nav-link i {
+  font-size: 1.1rem;
+  margin-right: .65rem;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar .nav-link:hover {
+  background-color: #f5f7fa;
+  color: #0d6efd;
+}
+
+.sidebar .nav-link:hover i {
+  opacity: 1;
+}
+
+.sidebar .nav-link.active {
+  background-color: #0d6efd;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.sidebar .nav-link.active i {
+  opacity: 1;
+}
+
+/* ==== Navbar ==== */
+.navbar {
+  background-color: #0d6efd !important; /* Azul corporativo */
+}
+
+.navbar .navbar-brand {
+  color: #fff !important;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.navbar .navbar-brand i {
+  font-size: 1.4rem;
+}
+
+.navbar .btn-link {
+  color: #fff !important;
+}
+
+.navbar .dropdown-toggle {
+  color: #fff !important;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.navbar .dropdown-menu {
+  border-radius: .5rem;
+  border: 1px solid #e5e7eb;
+}
+
+/* ==== Avatar ==== */
+.navbar img.rounded-circle {
+  border: 2px solid #fff;
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+}
+
+/* ==== Notificación badge ==== */
+.navbar .badge {
+  font-size: .65rem;
+  padding: .35em .45em;
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+}

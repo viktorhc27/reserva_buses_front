@@ -1,0 +1,58 @@
+<div class="modal-header">
+  <h4 class="modal-title">Datos de Cliente</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  </button>
+</div>
+
+<div class="modal-body">
+
+  <!-- Vista en modo lectura -->
+  <div *ngIf="!editMode">
+    <ul class="list-group mb-3">
+      <li class="list-group-item"><strong>Nombre:</strong> {{usuario.nombre}}</li>
+      <li class="list-group-item"><strong>Apellido:</strong> {{usuario.apellido}}</li>
+      <li class="list-group-item"><strong>RUT:</strong> {{usuario.rut}}</li>
+      <li class="list-group-item"><strong>Email:</strong> {{usuario.email}}</li>
+      <li class="list-group-item"><strong>Teléfono:</strong> {{usuario.telefono || 'No registrado'}}</li>
+    </ul>
+    <button class="btn btn-warning w-100" (click)="editMode = true">
+      Editar datos
+    </button>
+  </div>
+
+  <!-- Vista en modo edición -->
+  <form *ngIf="editMode" [formGroup]="formUsuario" class="p-2">
+    <div class="mb-2">
+      <label class="form-label">Nombre</label>
+      <input type="text" class="form-control" formControlName="nombre">
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Apellido</label>
+      <input type="text" class="form-control" formControlName="apellido">
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" formControlName="email">
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Teléfono</label>
+      <input type="text" class="form-control" formControlName="telefono">
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <!-- Modo lectura -->
+  <ng-container *ngIf="!editMode">
+    <button class="btn btn-success" (click)="emitirUsuario()">Asignar cliente</button>
+    <button type="button" class="btn btn-danger" (click)="activeModal.dismiss('Cancel click')">Cerrar</button>
+  </ng-container>
+
+  <!-- Modo edición -->
+  <ng-container *ngIf="editMode">
+    <button class="btn btn-primary" [disabled]="formUsuario.invalid" (click)="guardarCambios()">
+      Guardar datos
+    </button>
+    <button class="btn btn-secondary" (click)="editMode = false">Cancelar</button>
+  </ng-container>
+</div>

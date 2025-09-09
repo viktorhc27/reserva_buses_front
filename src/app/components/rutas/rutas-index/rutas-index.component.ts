@@ -119,4 +119,6 @@ export class RutasIndexComponent {
     button.addEventListener('click', onClick);
     return button;
   }
+
+
 }

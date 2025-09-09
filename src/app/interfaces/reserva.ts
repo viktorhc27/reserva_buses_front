@@ -7,3 +7,11 @@ export interface Reserva {
   horario_id: number;
   asientos_id: number;
 }
+
+
+export interface AsientosSeleccionados {
+  asientos_id: number;
+  horario_id: number;
+  usuario_id?: number;
+  bus_id?: number;
+}

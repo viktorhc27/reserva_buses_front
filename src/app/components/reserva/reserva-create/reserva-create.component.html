@@ -1,0 +1,66 @@
+<ngx-loading [show]="loading" [config]="{
+  backdropBorderRadius: '8px',
+  primaryColour: '#0d6efd',
+  secondaryColour: '#6c757d',
+  tertiaryColour: '#0d6efd'
+  }">
+</ngx-loading>
+
+<div class="container my-4">
+  <div class="row g-4">
+  <!-- Selección de Asiento -->
+  <div class="col-lg-8 col-12">
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+    <div class="d-flex align-items-center mb-3">
+      <span class="me-2 fs-3 text-primary"><i class="bi bi-chair"></i></span>
+      <h3 class="fw-bold text-dark mb-0">
+      Selección de Asiento
+      </h3>
+    </div>
+    <p class="text-muted mb-4">
+      Elija su asiento disponible para continuar con la compra.
+    </p>
+
+    <app-asientos-list *ngIf="horario" [horarioId]="horario.id" [cantidad]="qty"
+      (marcarAsientos)="recibirAsientoSeleccionado($event)"></app-asientos-list>
+    <div class="col-12 d-flex justify-content-end mt-4">
+      <button class="btn btn-success px-4 py-2 fw-semibold shadow-sm" (click)="siguiente()">
+      Siguiente <i class="bi bi-arrow-right ms-2"></i>
+      </button>
+    </div>
+    </div>
+  </div>
+
+  <!-- Información del horario -->
+  <div class="col-lg-4 col-12">
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
+    <h6 class="text-uppercase text-muted fw-bold mb-3">
+      Horario Actual
+    </h6>
+    <ul *ngIf="horario"  class="list-unstyled mb-0">
+      <li class="d-flex justify-content-between align-items-center mb-2">
+      <span class="text-muted"><i class="bi bi-clock me-1"></i>Hora de salida:</span>
+      <span class="fw-semibold">{{ horario.horaSalida }}</span>
+      </li>
+      <li class="d-flex justify-content-between align-items-center mb-2">
+      <span class="text-muted"><i class="bi bi-calendar-event me-1"></i>Fecha:</span>
+      <span class="fw-semibold">{{ horario.fechaSalida | date:"dd/MM/yyyy" }}</span>
+      </li>
+      <li class="d-flex justify-content-between align-items-center">
+      <span class="text-muted"><i class="bi bi-geo-alt me-1"></i>Ruta:</span>
+      <span class="fw-semibold">{{ horario.ruta?.origen | uppercase }} → {{ horario.ruta?.destino | uppercase }}</span>
+      </li>
+    </ul>
+    </div>
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+    <label class="form-label text-uppercase text-muted fw-bold mb-2" for="qtyInput">
+      Número de Asientos
+    </label>
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-person-lines-fill"></i></span>
+      <input type="number" min="1" class="form-control" [(ngModel)]="qty" name="qty" id="qtyInput" style="max-width: 100px;">
+    </div>
+    </div>
+  </div>
+  </div>
+</div>

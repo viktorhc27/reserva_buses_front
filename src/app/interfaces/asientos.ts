@@ -3,4 +3,5 @@ export interface Asientos {
   numero: number;
   estado: 'disponible' | 'ocupado' | 'reservado' | 'fuera_servicio';
   bus_id?: number;
+  horario_id:number;
 }

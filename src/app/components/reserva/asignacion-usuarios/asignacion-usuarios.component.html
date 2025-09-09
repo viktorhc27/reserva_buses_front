@@ -1,0 +1,85 @@
+<!-- Loader -->
+<ngx-loading [show]="loading" [config]="{
+  backdropBorderRadius: '8px',
+  primaryColour: '#0d6efd',
+  secondaryColour: '#6c757d',
+  tertiaryColour: '#0d6efd'
+}">
+</ngx-loading>
+
+<div class="container my-4">
+  <div class="row g-4">
+
+    <!-- Columna principal: Asignar Pasajeros -->
+    <div class="col-md-8">
+      <div class="card shadow-sm p-4">
+        <h4 class="mb-3">Asignar Pasajeros</h4>
+        <p class="text-muted mb-4">Complete los datos de cada pasajero para continuar con la reserva:</p>
+
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+          <div class="col" *ngFor="let item of lista_asientos(); let i = index">
+            <div class="card h-100 border rounded-3 shadow-sm">
+
+              <!-- Tarjeta de pasajero -->
+              <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h6 class="fw-bold mb-0">Pasajero {{i + 1}}</h6>
+                  <span class="badge" [ngClass]="item.usuario_id ? 'bg-success' : 'bg-secondary'">
+                    {{ item.usuario_id ? 'Asignado' : 'Pendiente' }}
+                  </span>
+                </div>
+                <small class="text-muted mb-3 d-block">Asiento N° {{item.asientos_id}}</small>
+
+                <!-- Formulario si no hay usuario asignado -->
+                <form [formGroup]="form" *ngIf="!item.usuario_id" class="mb-2">
+                  <div class="input-group">
+                    <input type="text" class="form-control" formControlName="rut" placeholder="RUT Ej: 12.345.678-9"
+                      mask="00.000.000-0" />
+                    <button type="button" class="btn btn-primary" (click)="buscarUsuarios(item.asientos_id)">
+                      <i class="bi bi-search"></i>
+                    </button>
+                  </div>
+                </form>
+
+                <!-- Opciones de acción si no hay usuario -->
+                <div *ngIf="!item.usuario_id" class="d-flex flex-column gap-2 mt-2">
+                  <button class="btn btn-outline-primary btn-sm w-100">
+                    <i class="bi bi-person-plus"></i> Crear cuenta
+                  </button>
+                  <button class="btn btn-outline-secondary btn-sm w-100">
+                    <i class="bi bi-box-arrow-in-right"></i> Invitado
+                  </button>
+                </div>
+
+                <!-- Información del usuario asignado -->
+                <div *ngIf="item.usuario_id" class="mt-2 p-2 bg-light rounded">
+                <!--   <p class="mb-0"><strong>Rut:</strong> {{getUsuario(item.usuario_id).rut}}</p> -->
+                  <p class="mb-1"><strong>Usuario asignado:</strong> {{getUsuario(item.usuario_id).nombre +"
+                    "+getUsuario(item.usuario_id).apellido}}</p>
+                  <p class="mb-0"><strong>Email:</strong> {{getUsuario(item.usuario_id).email}}</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Columna lateral: Resumen de compra -->
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3">
+        <h5 class="mb-3">Resumen de Compra</h5>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><b>Ruta:</b> ARICA → IQUIQUE</li>
+          <li class="list-group-item"><b>Fecha:</b> 28/08/2025</li>
+          <li class="list-group-item"><b>Hora:</b> 14:11:00</li>
+          <li class="list-group-item"><b>Asientos:</b> 1, 2</li>
+        </ul>
+        <button class="btn btn-success w-100 mt-3" (click)="guardarReserva()">Continuar</button>
+      </div>
+    </div>
+
+  </div>
+</div>
