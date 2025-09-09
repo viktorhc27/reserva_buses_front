@@ -28,7 +28,7 @@
                     {{ item.usuario_id ? 'Asignado' : 'Pendiente' }}
                   </span>
                 </div>
-                <small class="text-muted mb-3 d-block">Asiento N° {{item.asientos_id}}</small>
+                <small class="text-muted mb-3 d-block">Asiento N° {{item.asiento.numero}}</small>
 
                 <!-- Formulario si no hay usuario asignado -->
                 <form [formGroup]="form" *ngIf="!item.usuario_id" class="mb-2">
@@ -53,7 +53,7 @@
 
                 <!-- Información del usuario asignado -->
                 <div *ngIf="item.usuario_id" class="mt-2 p-2 bg-light rounded">
-                <!--   <p class="mb-0"><strong>Rut:</strong> {{getUsuario(item.usuario_id).rut}}</p> -->
+                  <!--   <p class="mb-0"><strong>Rut:</strong> {{getUsuario(item.usuario_id).rut}}</p> -->
                   <p class="mb-1"><strong>Usuario asignado:</strong> {{getUsuario(item.usuario_id).nombre +"
                     "+getUsuario(item.usuario_id).apellido}}</p>
                   <p class="mb-0"><strong>Email:</strong> {{getUsuario(item.usuario_id).email}}</p>
@@ -72,10 +72,11 @@
       <div class="card shadow-sm p-3">
         <h5 class="mb-3">Resumen de Compra</h5>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item"><b>Ruta:</b> ARICA → IQUIQUE</li>
-          <li class="list-group-item"><b>Fecha:</b> 28/08/2025</li>
-          <li class="list-group-item"><b>Hora:</b> 14:11:00</li>
-          <li class="list-group-item"><b>Asientos:</b> 1, 2</li>
+          <li class="list-group-item"><b>Ruta:</b> {{horario.ruta?.origen | uppercase}} → {{horario.ruta?.destino |
+            uppercase}}</li>
+          <li class="list-group-item"><b>Fecha:</b> {{ horario.fechaSalida | date:"dd/MM/yyyy" }}</li>
+          <li class="list-group-item"><b>Hora:</b>{{ horario.horaSalida }}</li>
+          <li class="list-group-item"><b>Asientos:</b> {{ this.getListaAsientoString()}}</li>
         </ul>
         <button class="btn btn-success w-100 mt-3" (click)="guardarReserva()">Continuar</button>
       </div>

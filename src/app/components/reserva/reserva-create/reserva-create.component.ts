@@ -74,7 +74,7 @@ export class ReservaCreateComponent {
     return this.form.get('reserva') as FormArray;
   }
 
-  private agregarReserva(horario_id: number, asiento_id: number): void {
+  private agregarReserva(horario_id: number, asiento_id: number, asiento: Asientos): void {
     // Verifica si ya existe una reserva para el asiento_id
     const existe = this.lineasForm.controls.some(
       ctrl => ctrl.get('asientos_id')?.value === asiento_id
@@ -90,64 +90,19 @@ export class ReservaCreateComponent {
       horario_id: [horario_id, Validators.required],
       asientos_id: [asiento_id, Validators.required],
       bus_id: [this.horario.bus_id, Validators.required],
+      asiento:[asiento],
       usuario_id: [null]
     });
     this.lineasForm.push(this.formAsiento);
   }
-
+/*
   private cargarReservasAsignadas(asiento?: AsientosSeleccionados) {
     if (!asiento || !this.horario) return;
     if (this.horario.bus_id === asiento.bus_id && this.horario.id === asiento.horario_id) {
       this.agregarReserva(asiento.horario_id, asiento.asientos_id);
-      /* this.qty = reservas.length; */
     }
 
-  }
-
-  /*   private loadHorario(id: number): void {
-      this.loading = true;
-      this.servicesHorario.view(id).pipe(
-        switchMap((res: Horario) => {
-          this.horario = res;
-          this.asientos = res.bus?.asientos || [];
-          return this.servicesReserva.getAsientos()
-
-        }),
-        switchMap((reservas: any) => {
-          this.qty = reservas.length || 1;
-          if (reservas) {
-            this.cargarReservasAsignadas(reservas);
-            const verificaciones$ = this.servicesReserva.verificarReserva(reservas).pipe(
-              catchError(err => {
-                console.error('Error en verificarReserva', err);
-                return of(false); // seguimos el flujo aunque falle
-              })
-            );
-            console.log(verificaciones$);
-
-            return forkJoin(verificaciones$)
-          } else {
-            return of(false);
-          }
-        }),
-        catchError(err => {
-          console.log(err);
-          this.alertService.alertError(err);
-          console.error('Error general', err);
-          return of(false);
-        }),
-        finalize(() => {
-          this.loading = false; // <-- Aseguramos desactivar loading siempre
-        })
-      ).subscribe(res => {
-        console.log(res);
-        if (!res) {
-          this.alertService.alertInfo('algunos de sus asientos ya no se encuetran disponibles')
-
-        }
-      });
-    }
-   */
+  } */
 
   private loadHorario(id: number) {
     this.loading = true
@@ -158,7 +113,6 @@ export class ReservaCreateComponent {
         this.asientos = res.bus?.asientos || [];
         const lista = this.servicesReserva.getAsientos()
         if (lista) {
-
           this.verificarReservas(lista)
         }
 
@@ -180,8 +134,6 @@ export class ReservaCreateComponent {
         if (!res.libre) {
           this.alertService.alertInfo(res.response)
         }
-
-
       }, error: (err: any) => {
         this.loading = false;
         console.log(err);
@@ -197,9 +149,8 @@ export class ReservaCreateComponent {
       console.error('Horario no definido');
       return;
     }
-
     asientos.forEach(a => {
-      this.agregarReserva(this.horario.id, a.id);
+      this.agregarReserva(this.horario.id, a.id, a);
     });
   }
 
@@ -247,3 +198,47 @@ export class ReservaCreateComponent {
   }
 
 }
+/*   private loadHorario(id: number): void {
+    this.loading = true;
+    this.servicesHorario.view(id).pipe(
+      switchMap((res: Horario) => {
+        this.horario = res;
+        this.asientos = res.bus?.asientos || [];
+        return this.servicesReserva.getAsientos()
+
+      }),
+      switchMap((reservas: any) => {
+        this.qty = reservas.length || 1;
+        if (reservas) {
+          this.cargarReservasAsignadas(reservas);
+          const verificaciones$ = this.servicesReserva.verificarReserva(reservas).pipe(
+            catchError(err => {
+              console.error('Error en verificarReserva', err);
+              return of(false); // seguimos el flujo aunque falle
+            })
+          );
+          console.log(verificaciones$);
+
+          return forkJoin(verificaciones$)
+        } else {
+          return of(false);
+        }
+      }),
+      catchError(err => {
+        console.log(err);
+        this.alertService.alertError(err);
+        console.error('Error general', err);
+        return of(false);
+      }),
+      finalize(() => {
+        this.loading = false; // <-- Aseguramos desactivar loading siempre
+      })
+    ).subscribe(res => {
+      console.log(res);
+      if (!res) {
+        this.alertService.alertInfo('algunos de sus asientos ya no se encuetran disponibles')
+
+      }
+    });
+  }
+ */

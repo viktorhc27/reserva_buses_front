@@ -57,4 +57,8 @@ export class ReservaService {
   verificarReservaLista(reserva: any): Observable<any> {
     return this.http.post(this.urlBase + this.controller + 'verificarListaReserva', { reserva })
   }
+  ticketReserva(ticket_id: number): Observable<Blob> {
+    return this.http.get(this.urlBase + this.controller + 'ticket_reserva/' + ticket_id, { responseType: 'blob' })
+
+  }
 }

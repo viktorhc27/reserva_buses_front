@@ -11,6 +11,10 @@ import { AlertService } from '../../../core/services/alert/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UsuarioListComponent } from '../usuario-list/usuario-list.component';
 import { AsientosSeleccionados } from '../../../interfaces/reserva';
+import { HorarioService } from '../../horario/horario.service';
+import { Horario } from '../../../interfaces/horario';
+import { Router } from '@angular/router';
+import { concatMap, finalize, from, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-asignacion-usuarios',
@@ -24,10 +28,12 @@ export class AsignacionUsuariosComponent {
   form: FormGroup = new FormGroup({})
   readonly serviceReserva = inject(ReservaService);
   readonly servicesUsuarios = inject(UsuarioService);
+  readonly servicesHorario = inject(HorarioService);
   readonly formBuilder = inject(FormBuilder);
   readonly alertService = inject(AlertService);
   readonly modalServices = inject(NgbModal);
-
+  readonly router = inject(Router)
+  horario!: Horario
   usuarios: any;
   lista_asientos = signal<AsientosSeleccionados[]>(this.serviceReserva.getAsientos());
 
@@ -36,7 +42,7 @@ export class AsignacionUsuariosComponent {
       rut: [null, [Validators.required, rutValidator()]]
     })
     this.loadUsuarios()
-    console.log(this.lista_asientos);
+    this.getInfoHorario()
   }
 
   private loadUsuarios(): void {
@@ -82,18 +88,57 @@ export class AsignacionUsuariosComponent {
 
   guardarReserva() {
     this.loading = true
-    console.log(this.lista_asientos());
-    this.serviceReserva.reservar(this.lista_asientos()).subscribe({
-      next: (res: any) => {
-        this.loading = false
-        console.log(res);
-
-      }, error: (err: any) => {
-        this.loading = false
-
-        this.alertService.alertWarning(err.response)
+    this.serviceReserva.reservar(this.lista_asientos()).pipe(
+      concatMap((res: any) => {
+        this.alertService.alertSuccess(res.response);
+        this.serviceReserva.limpiarAsientos();
+        // Extraemos los IDs de cada reserva
+        const reservaIds: number[] = res.reservasSaved.map((r: any) => r.id);
+        return from(reservaIds);
+      }),
+      concatMap((reserva: any) => {
+        // Llamada al backend para generar PDF individual de cada reserva
+        return this.serviceReserva.ticketReserva(reserva); // enviamos array de 1
+      }),
+      tap((pdfBlob: Blob) => {
+        // Abrir PDF individual
+        const fileURL = URL.createObjectURL(pdfBlob);
+        window.open(fileURL);
+      }),
+      finalize(() => {
+        this.loading = false;
+        this.router.navigate(['reservas/index']);
+      })
+    ).subscribe({
+      error: (err: any) => {
+        this.loading = false;
+        console.log(err);
+        this.alertService.alertWarning(err.error?.response || 'Error al generar ticket');
       }
     });
+  }
+  getInfoHorario() {
+    const infoHorario = this.serviceReserva.getAsientos()
+    const horarioId = infoHorario.length > 0 ? infoHorario[0].horario_id : null;
+    if (horarioId) {
+      this.loading = true;
+      this.servicesHorario.view(horarioId).subscribe({
+        next: (res: Horario) => {
+          this.loading = false;
+          this.horario = res
+        },
+        error: (err: any) => {
+          this.loading = false;
+          console.error(err);
+        }
+      });
+    }
+
+  }
+  getListaAsientoString() {
+    const infoReservas = this.serviceReserva.getAsientos()
+    const text = infoReservas.map((a: AsientosSeleccionados) => a.asiento.numero)
+    return text.join(',');
 
   }
 }

@@ -1,3 +1,5 @@
+import { Asientos } from "./asientos";
+
 export interface Reserva {
   id: number;
   estado: 'PENDIENTE' | 'CONFIRMADA' | 'PENDIENTE'; // según tu ENUM
@@ -14,4 +16,5 @@ export interface AsientosSeleccionados {
   horario_id: number;
   usuario_id?: number;
   bus_id?: number;
+  asiento:Asientos
 }
