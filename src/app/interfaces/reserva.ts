@@ -11,10 +11,11 @@ export interface Reserva {
 }
 
 
-export interface AsientosSeleccionados {
+export interface PreReserva {
   asientos_id: number;
   horario_id: number;
-  usuario_id?: number;
+  cliente_id?: number | null;
   bus_id?: number;
-  asiento:Asientos
+  asiento: Asientos;
+  ruta_id:number;
 }

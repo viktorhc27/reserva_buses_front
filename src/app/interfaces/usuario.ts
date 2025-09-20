@@ -11,11 +11,12 @@ export interface Usuario {
   updatedAt: string;
 }
 
-export interface UsuarioInvitado {
+export interface Clientes {
   id?: number;
   rut:string;
   nombre: string;
-  apellido: string;
+  apellidos: string;
+  password?:string;
   email: string;
   telefono: string;
   createdAt: string;

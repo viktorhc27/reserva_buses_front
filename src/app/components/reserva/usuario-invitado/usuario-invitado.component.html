@@ -1,0 +1,64 @@
+<div class="modal-header">
+  <h4 class="modal-title">Registro de cliente</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+  </button>
+</div>
+<div class="modal-body">
+  <form [formGroup]="form">
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="nombre">Nombre</label>
+        <input type="text" class="form-control" formControlName="nombre"
+          [ngClass]="{'is-invalid': form.controls['nombre'].errors && form.controls['nombre'].touched}">
+        <div class="invalid-feedback">
+          Debe Ingresar un valor
+        </div>
+      </div>
+    </div>
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="apellidos">Apellidos</label>
+        <input type="text" class="form-control" formControlName="apellidos"
+          [ngClass]="{'is-invalid': form.controls['apellidos'].errors && form.controls['apellidos'].touched}">
+        <div class="invalid-feedback">
+          Debe Ingresar un valor
+        </div>
+      </div>
+    </div>
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="rut">Rut</label>
+        <input type="text" #rutInput class="form-control" formControlName="rut" placeholder="12.345.678-9"
+          [ngClass]="{'is-invalid': form.controls['rut'].errors && form.controls['rut'].touched}">
+        <div class="invalid-feedback">
+          Debe Ingresar un valor
+        </div>
+      </div>
+    </div>
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="email">Email</label>
+        <input type="text" class="form-control" formControlName="email"
+          [ngClass]="{'is-invalid': form.controls['email'].errors && form.controls['email'].touched}">
+        <div class="invalid-feedback">
+          Debe Ingresar un valor
+        </div>
+      </div>
+    </div>
+    <div class="row d-flex">
+      <div class="col-12 col-md">
+        <label for="telefono">Telefono|</label>
+        <input type="text" class="form-control" formControlName="telefono"
+          [ngClass]="{'is-invalid': form.controls['telefono'].errors && form.controls['telefono'].touched}">
+        <div class="invalid-feedback">
+          Debe Ingresar un valor
+        </div>
+      </div>
+    </div>
+  </form>
+
+</div>
+<div class="modal-footer">
+  <button class="btn btn-success" (click)="guardarInvitado()">Guardar</button>
+  <button type="button" class="btn btn-danger" (click)="activeModal.dismiss('Cancel click')">Cerrar</button>
+</div>

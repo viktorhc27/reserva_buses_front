@@ -9,7 +9,7 @@ import { Asientos } from '../../../interfaces/asientos';
 import { AsientosListComponent } from '../../asientos/asientos-list/asientos-list.component';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ReservaService } from '../reserva.service';
-import { AsientosSeleccionados } from '../../../interfaces/reserva';
+import { PreReserva } from '../../../interfaces/reserva';
 import { catchError, finalize, forkJoin, of, switchMap, toArray } from 'rxjs';
 
 @Component({
@@ -31,10 +31,10 @@ export class ReservaCreateComponent {
   loading = false;
   horario!: Horario;
   asientos: Asientos[] = [];
-  reservas!: AsientosSeleccionados[]//para pintar los asinetos seleccionados
+  reservas!: PreReserva[]//para pintar los asinetos seleccionados
   qty = 1;
   form: FormGroup = new FormGroup({});
-  formAsiento: FormGroup = new FormGroup({});
+  pre_reserva: FormGroup = new FormGroup({});
   formUsuario: FormGroup = new FormGroup({});
   vista: 'reserva' | 'informacion' | 'pago' = 'reserva';
 
@@ -73,7 +73,18 @@ export class ReservaCreateComponent {
   get lineasForm(): FormArray {
     return this.form.get('reserva') as FormArray;
   }
-
+  /**
+   * Agrega una nueva reserva de asiento al formulario dinámico (`lineasForm`).
+   *
+   * @param horario_id - Identificador del horario al que pertenece la reserva.
+   * @param asiento_id - Identificador del asiento seleccionado.
+   * @param asiento - Objeto con la información del asiento seleccionado.
+   *
+   * - Verifica si ya existe una reserva para el mismo `asiento_id` y evita duplicados.
+   * - Comprueba que la propiedad `horario` esté definida antes de continuar.
+   * - Crea un `FormGroup` con los datos necesarios (horario, asiento, bus, usuario).
+   * - Inserta el grupo en el arreglo de controles (`lineasForm`).
+   */
   private agregarReserva(horario_id: number, asiento_id: number, asiento: Asientos): void {
     // Verifica si ya existe una reserva para el asiento_id
     const existe = this.lineasForm.controls.some(
@@ -86,24 +97,15 @@ export class ReservaCreateComponent {
       return;
     }
 
-    this.formAsiento = this.formBuilder.group({
+    this.pre_reserva = this.formBuilder.group({
       horario_id: [horario_id, Validators.required],
       asientos_id: [asiento_id, Validators.required],
       bus_id: [this.horario.bus_id, Validators.required],
-      asiento:[asiento],
-      usuario_id: [null]
+      asiento: [asiento],
+      cliente_id: [null],
     });
-    this.lineasForm.push(this.formAsiento);
+    this.lineasForm.push(this.pre_reserva);
   }
-/*
-  private cargarReservasAsignadas(asiento?: AsientosSeleccionados) {
-    if (!asiento || !this.horario) return;
-    if (this.horario.bus_id === asiento.bus_id && this.horario.id === asiento.horario_id) {
-      this.agregarReserva(asiento.horario_id, asiento.asientos_id);
-    }
-
-  } */
-
   private loadHorario(id: number) {
     this.loading = true
     this.servicesHorario.view(id).subscribe({

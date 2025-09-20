@@ -1,0 +1,19 @@
+.asiento-vacio {
+  width: 60px;
+  height: 60px;
+  margin: 2px;
+}
+
+.drag-handle {
+  cursor: grab;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.asientos-grid .card, table .card {
+  min-width: 60px;
+  min-height: 60px;
+}

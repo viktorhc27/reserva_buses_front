@@ -1,30 +1,21 @@
-# Usamos Node Slim (más estable que Alpine para npm)
-FROM node:20-slim
+FROM node:20
 
-# Instalamos dependencias del sistema
-RUN apt-get update && apt-get install -y python3 make g++ git && rm -rf /var/lib/apt/lists/*
-
-# Directorio de trabajo
 WORKDIR /app
 
-# Copiar package.json y package-lock.json
+# Copiamos solo lo necesario para instalar dependencias
 COPY package*.json ./
 
-# Eliminar cualquier instalación previa (por si acaso)
+# Instalamos dependencias sin opcionales para evitar el bug de Rollup
 RUN rm -rf node_modules package-lock.json
 
-# Instalar dependencias locales sin opcionales (evita errores con Rollup)
-RUN npm install --legacy-peer-deps --no-optional
+RUN npm install --no-optional --legacy-peer-deps
 
-# Instalar Angular CLI localmente
-RUN npm install @angular/cli@18 --save-dev --legacy-peer-deps
-
-# Copiar resto del proyecto
+# Copiamos el resto del proyecto
 COPY . .
 
-# Variables de entorno para hot reload
+# Activamos hot reload en Docker Desktop (Mac/Windows)
 ENV CHOKIDAR_USEPOLLING=true
-ENV NG_CLI_ANALYTICS=ci
-# Comando para levantar Angular
-#CMD ["npx", "ng", "serve", "--host", "0.0.0.0"]
-CMD ["npx", "ng", "serve", "--host", "0.0.0.0", "--poll=2000", "--disable-host-check"]
+
+EXPOSE 4200
+
+CMD ["npx", "ng", "serve", "--host", "0.0.0.0"]

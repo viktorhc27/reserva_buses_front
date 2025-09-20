@@ -1,9 +1,10 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { Usuario } from '../../../interfaces/usuario';
+import { Clientes, Usuario } from '../../../interfaces/usuario';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UsuarioService } from '../../usuario/usuario.service';
+import { UsuariosInvitadosService } from '../../usuario/usuarios-invitados.service';
 
 @Component({
   selector: 'app-usuario-list',
@@ -13,13 +14,13 @@ import { UsuarioService } from '../../usuario/usuario.service';
   styleUrl: './usuario-list.component.scss'
 })
 export class UsuarioListComponent {
-  @Input() usuario!: any;
+  @Input() usuario!: Clientes;
   @Output() usuario_id = new EventEmitter<number>();
   editMode = false;
   loading = false;
   formUsuario: FormGroup = new FormGroup({});
   readonly activeModal = inject(NgbActiveModal);
-  readonly servicesUsuarios = inject(UsuarioService);
+  readonly servicesUsuarios = inject(UsuariosInvitadosService);
   readonly fb = inject(FormBuilder);
   ngOnInit(): void {
     this.initForm()
@@ -28,7 +29,7 @@ export class UsuarioListComponent {
     this.formUsuario = this.fb.group({
       id: [this.usuario.id],
       nombre: [this.usuario.nombre, Validators.required],
-      apellido: [this.usuario.apellido, Validators.required],
+      apellidos: [this.usuario.apellidos, Validators.required],
       email: [this.usuario.email, [Validators.required, Validators.email]],
       telefono: [this.usuario.telefono]
     });

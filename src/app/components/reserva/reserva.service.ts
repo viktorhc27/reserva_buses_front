@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../core/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AsientosSeleccionados, Reserva } from '../../interfaces/reserva';
+import { PreReserva, Reserva } from '../../interfaces/reserva';
 import { SesionService } from '../../utils/sesion/sesion.service';
 
 @Injectable({
@@ -39,17 +39,17 @@ export class ReservaService {
     return this.http.delete<{ response: string }>(this.urlBase + this.controller + 'delete/' + id, this.sesionService.headers);
   }
 
-  setAsientos(asientos: AsientosSeleccionados[]) {
-    localStorage.setItem('asientos_seleccionados', JSON.stringify(asientos));
+  setAsientos(asientos: PreReserva[]) {
+    localStorage.setItem('pre_reserva', JSON.stringify(asientos));
   }
   //
   getAsientos() {
-    return JSON.parse(localStorage.getItem('asientos_seleccionados') || '[]');
+    return JSON.parse(localStorage.getItem('pre_reserva') || '[]') as PreReserva[];
   }
 
   // Limpiar selección
   limpiarAsientos(): void {
-    localStorage.removeItem('asientos_seleccionados');
+    localStorage.removeItem('pre_reserva');
   }
   verificarReserva(reserva: any): Observable<any> {
     return this.http.post(this.urlBase + this.controller + 'verificarReserva', { reserva })

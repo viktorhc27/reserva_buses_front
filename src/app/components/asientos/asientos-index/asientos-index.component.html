@@ -1,0 +1,67 @@
+<ngx-loading [show]="loading" [config]="{
+    backdropBorderRadius: '12px',
+    primaryColour: '#0d6efd',
+    secondaryColour: '#6c757d',
+    tertiaryColour: '#0d6efd',
+    fullScreenBackdrop: true
+  }">
+</ngx-loading>
+
+<div class="row g-4">
+  <!-- Lista de Asientos libres -->
+  <div class="col-lg-4">
+    <h2 class="mb-3 text-primary">
+      <i class="fa-solid fa-chair me-2"></i> Asientos
+    </h2>
+
+    <div class="d-grid gap-2 asientos-grid" style="grid-template-columns: repeat(4, 1fr);"
+         cdkDropList
+         [cdkDropListData]="asientosLibres"
+         (cdkDropListDropped)="drop($event)">
+
+      <div *ngFor="let asiento of asientosLibres" class="card text-center p-2 shadow-sm" cdkDrag>
+        <div class="drag-handle text-muted" cdkDragHandle>
+          <i class="fa-solid fa-up-down-left-right"></i>
+        </div>
+        <i class="fa-solid fa-chair d-block mb-1" [ngClass]="{
+          'text-success': asiento.estado === 'disponible',
+          'text-danger': asiento.estado === 'fuera_servicio'
+        }"></i>
+        <div class="fw-bold">N°{{ asiento.numero }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mapa de Asientos -->
+  <div class="col-lg-8">
+    <div class="mx-auto" style="max-width: 600px;">
+      <h3 class="bg-info text-white text-center py-2 rounded shadow-sm">
+        <i class="fa-solid fa-bus me-2"></i> Frente
+      </h3>
+      <table class="table table-bordered text-center align-middle mt-3">
+        <tr *ngFor="let fila of distribucion; let fi = index"
+            cdkDropList
+            [cdkDropListData]="distribucion[fi]"
+            (cdkDropListDropped)="drop($event)">
+          <td *ngFor="let asiento of fila; let ci = index">
+            <ng-container *ngIf="asiento; else vacio">
+              <div class="card text-center p-2 shadow-sm" cdkDrag>
+                <div class="drag-handle text-muted" cdkDragHandle>
+                  <i class="fa-solid fa-up-down-left-right"></i>
+                </div>
+                <i class="fa-solid fa-chair d-block mb-1" [ngClass]="{
+                  'text-success': asiento.estado === 'disponible',
+                  'text-danger': asiento.estado === 'fuera_servicio'
+                }"></i>
+                <div class="fw-bold">N°{{ asiento.numero }}</div>
+              </div>
+            </ng-container>
+            <ng-template #vacio>
+              <div class="asiento-vacio"></div>
+            </ng-template>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>

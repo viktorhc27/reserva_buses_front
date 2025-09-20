@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { NgxLoadingModule } from 'ngx-loading';
 import { AsientosService } from '../asientos.service';
 import { AlertService } from '../../../core/services/alert/alert.service';
-import { AsientosSeleccionados } from '../../../interfaces/reserva';
+import { PreReserva } from '../../../interfaces/reserva';
 import { ReservaService } from '../../reserva/reserva.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class AsientosListComponent {
   get qty() {
     return this._qty;
   }
-  @Input() reservas!: AsientosSeleccionados[]
+  @Input() reservas!: PreReserva[]
   asientosLista: Asientos[] = [];
   asientosSeleccionados: Asientos[] = [];
   @Output() marcarAsientos = new EventEmitter<Asientos[]>();
@@ -68,7 +68,7 @@ export class AsientosListComponent {
         this.loading = false;
         if (res.mapAsientos) {
           this.asientosLista = res.mapAsientos.map((a: Asientos) => {
-            const reservado = this.servicesReserva.getAsientos().some((r: AsientosSeleccionados) => r.asientos_id === a.id && r.horario_id === a.horario_id && a.estado == 'disponible')
+            const reservado = this.servicesReserva.getAsientos().some((r: PreReserva) => r.asientos_id === a.id && r.horario_id === a.horario_id && a.estado == 'disponible')
             if (reservado) {
               this.asientosSeleccionados.push({
                 ...a,

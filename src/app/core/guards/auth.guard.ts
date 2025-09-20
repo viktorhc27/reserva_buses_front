@@ -1,17 +1,25 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, Router,UrlTree } from '@angular/router';
 import { SesionService } from '../../utils/sesion/sesion.service';
+import { map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const service = inject(SesionService);
   const router = inject(Router);
 
 
-  if(!service.token){
-    router.navigate(['/login']);
-    return false;
+  if (!service.token) {
+    return router.createUrlTree(['/login']);
   }
-  console.log("guard");
 
-  return true;
+  return service.isLogged().pipe(
+    map((logged: boolean) => (logged ? true : router.createUrlTree(['/login']))),
+    catchError((error) => {
+      console.log('Error al validar sesion', error);
+      return of(router.createUrlTree(['/login']));
+    })
+  );
+
+
 };

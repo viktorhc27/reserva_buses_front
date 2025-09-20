@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ReservaService } from '../reserva.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Usuario } from '../../../interfaces/usuario';
+import { Usuario, Clientes } from '../../../interfaces/usuario';
 import { NgxLoadingModule } from 'ngx-loading';
 import { UsuarioService } from '../../usuario/usuario.service';
 import { NgxMaskDirective } from 'ngx-mask';
@@ -10,11 +10,13 @@ import { rutValidator } from '../../../utils/validators/form-validator';
 import { AlertService } from '../../../core/services/alert/alert.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UsuarioListComponent } from '../usuario-list/usuario-list.component';
-import { AsientosSeleccionados } from '../../../interfaces/reserva';
+import { PreReserva } from '../../../interfaces/reserva';
 import { HorarioService } from '../../horario/horario.service';
 import { Horario } from '../../../interfaces/horario';
 import { Router } from '@angular/router';
 import { concatMap, finalize, from, switchMap, tap } from 'rxjs';
+import { UsuarioInvitadoComponent } from '../usuario-invitado/usuario-invitado.component';
+import { UsuariosInvitadosService } from '../../usuario/usuarios-invitados.service';
 
 @Component({
   selector: 'app-asignacion-usuarios',
@@ -28,14 +30,18 @@ export class AsignacionUsuariosComponent {
   form: FormGroup = new FormGroup({})
   readonly serviceReserva = inject(ReservaService);
   readonly servicesUsuarios = inject(UsuarioService);
+  readonly servicesClientes = inject(UsuariosInvitadosService);
   readonly servicesHorario = inject(HorarioService);
   readonly formBuilder = inject(FormBuilder);
+  readonly servicesUsuarioInvitados = inject(UsuariosInvitadosService)
   readonly alertService = inject(AlertService);
   readonly modalServices = inject(NgbModal);
   readonly router = inject(Router)
   horario!: Horario
   usuarios: any;
-  lista_asientos = signal<AsientosSeleccionados[]>(this.serviceReserva.getAsientos());
+  clientes!: Clientes[]
+  lista_asientos = signal<PreReserva[]>(this.serviceReserva.getAsientos());
+  lista_invitados!: Clientes[]
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
@@ -43,6 +49,8 @@ export class AsignacionUsuariosComponent {
     })
     this.loadUsuarios()
     this.getInfoHorario()
+    this.getListaInvitados()
+    this.loadClientes()
   }
 
   private loadUsuarios(): void {
@@ -58,19 +66,34 @@ export class AsignacionUsuariosComponent {
       }
     })
   }
+  private loadClientes(): void {
+    this.loading = true;
+    this.servicesClientes.index().subscribe({
+      next: (data) => {
+        this.loading = false;
+        this.clientes = data;
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error(err);
+      }
+    })
+  }
   buscarUsuarios(asiento_id: number) {
     if (this.form.invalid) {
       return this.alertService.alertWarning('Error en el rut')
     }
+    console.log(this.form.get('rut')?.value);
+
     const modelRef = this.modalServices.open(UsuarioListComponent, { size: 'md' });
-    modelRef.componentInstance.usuario = this.usuarios.find((e: Usuario) => e.rut === this.form.get('rut')?.value);
+    modelRef.componentInstance.usuario = this.clientes.find((e: Clientes) => e.rut === this.form.get('rut')?.value);
     modelRef.componentInstance.asiento_id = asiento_id
     modelRef.result.then(
       () => {
         modelRef.result.then((id: number) => {
           this.lista_asientos.update(asientos =>
-            asientos.map(a =>
-              a.asientos_id === asiento_id ? { ...a, usuario_id: id } : a
+            asientos.map((a) =>
+              a.asientos_id === asiento_id ? { ...a, cliente_id: id } : a
             )
           );
           this.serviceReserva.setAsientos(this.lista_asientos())
@@ -82,10 +105,13 @@ export class AsignacionUsuariosComponent {
     );
   }
 
-  getUsuario(id: number): Usuario {
-    return this.usuarios.find((e: Usuario) => e.id = id);
+  getUsuario(id: number): Usuario | undefined {
+    return this.usuarios.find((e: Usuario) => e.id === id);
   }
 
+  getUsuarioInvitado(id: number): Clientes | undefined {
+    return this.clientes.find((e: Clientes) => e.id === id);
+  }
   guardarReserva() {
     this.loading = true
     this.serviceReserva.reservar(this.lista_asientos()).pipe(
@@ -137,8 +163,34 @@ export class AsignacionUsuariosComponent {
   }
   getListaAsientoString() {
     const infoReservas = this.serviceReserva.getAsientos()
-    const text = infoReservas.map((a: AsientosSeleccionados) => a.asiento.numero)
+    const text = infoReservas.map((a: PreReserva) => a.asiento.numero)
     return text.join(',');
+  }
 
+  modal_invitados(asiento_id: number) {
+    const modalRef = this.modalServices.open(UsuarioInvitadoComponent, { size: 'sm', scrollable: true, centered: true });
+    modalRef.result.then((id: any) => {
+      this.lista_asientos.update(asientos =>
+        asientos.map(a =>
+          a.asientos_id === asiento_id ? { ...a, usuario_invitado_id: id, usuario_id: null } : a
+        )
+      );
+      this.serviceReserva.setAsientos(this.lista_asientos())
+      this.getListaInvitados()
+    }, (reason: any) => { });
+
+  }
+  getListaInvitados() {
+    this.loading = true;
+    this.servicesUsuarioInvitados.index().subscribe({
+      next: (res: any) => {
+        this.loading = false;
+        this.lista_invitados = res
+      },
+      error: (err: any) => {
+        this.loading = false;
+        console.error(err);
+      }
+    });
   }
 }

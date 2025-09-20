@@ -10,7 +10,7 @@ import { IsLoggedResponse, LoginResponse } from '../../interfaces/session';
 })
 export class SesionService {
 
- private readonly controller: string = 'auth/';
+  private readonly controller: string = 'auth/';
   private readonly urlBase: string = environment.apiURL;
 
   constructor(
@@ -58,15 +58,23 @@ export class SesionService {
     );
   }
 
-  /** Verifica si el usuario sigue logeado */
+  /**
+   * Verifica si el usuario sigue autenticado en la sesión actual.
+   *
+   * @returns Observable que emite:
+   *  - `true` si la API confirma que el usuario sigue logueado.
+   *  - `false` si no está logueado o si ocurre un error en la petición.
+   */
   isLogged(): Observable<boolean> {
-    return this.http.get<IsLoggedResponse>(
-      `${this.urlBase}${this.controller}isLogged`,
-      this.headers
-    ).pipe(
-      map(res => res.logged),
-      catchError(() => of(false))
-    );
+    return this.http
+      .get<IsLoggedResponse>(`${this.urlBase}${this.controller}isLogged`, this.headers)
+      .pipe(
+        map((response: IsLoggedResponse) => response.logged ?? false),
+        catchError((error) => {
+          console.error('Error al verificar sesión:', error);
+          return of(false);
+        })
+      );
   }
 
   /** Cierra sesión eliminando datos */
