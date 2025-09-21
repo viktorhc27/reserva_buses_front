@@ -34,10 +34,18 @@ export class LoginComponent {
     this.sesionService.login(this.loginForm.value).subscribe({
       next: (res: any) => {
         this.loading = false;
-        this.router.navigate(['/']);
+        console.log(res);
+        if (res.response) {
+          this.router.navigate(['/']);
+        } else {
+          this.alerts.alertError(res.message)
+        }
+
+
       }, error: (err: any) => {
         this.loading = false;
-        if (err.response) this.alerts.alertSuccess('Error', err.msg ?? 'Error en la conexión con el servidor');
+        this.router.navigate(['/login']);
+        if (!err.response) this.alerts.alertSuccess('Error', err.msg ?? 'Error en la conexión con el servidor');
         else this.alerts.alertSuccess('Error', 'Error en la conexión con el servidor');
       }
     });

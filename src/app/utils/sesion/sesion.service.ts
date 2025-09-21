@@ -48,13 +48,13 @@ export class SesionService {
       this.httpOptions
     ).pipe(
       map(res => {
-        if (res.response === 'success' && res.token && res.usuario) {
+        if (res.response== true && res.token && res.usuario) {
           localStorage.setItem('token', res.token);
           localStorage.setItem('usuario', JSON.stringify(res.usuario));
         }
         return res;
       }),
-      catchError(() => of({ response: 'error' as const, message: 'Error en la conexión con el servidor' }))
+      catchError((res) => of({ response: false as const, message: res.error.message }))
     );
   }
 

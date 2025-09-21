@@ -6,7 +6,7 @@ export interface UsuarioLogin {
 }
 
 export interface LoginResponse {
-  response: 'success' | 'error';
+  response: boolean;
   token?: string;
   usuario?: UsuarioLogin;
   msg?: string;
